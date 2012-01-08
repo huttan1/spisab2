@@ -45,7 +45,37 @@ namespace ProfIT
             }
         }
 
+        public static List<Person> GetEmployeesFromMamut(Exception exception, HttpRequest request)
+        {
+            try
+            {
+                var employeesFromMamut = GetEmployeesFromMamut();
+                
+                var persons = AddOrUpdatePerson(employeesFromMamut);
 
+                return persons;
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        private static List<Person> AddOrUpdatePerson(IEnumerable<MamutEmployee> emp)
+        {
+            List<Person> persons = new List<Person>();
+
+            foreach (var personMamut in emp)
+            {
+                Person person = SiteUtilities.AddPerson(personMamut);
+
+                persons.Add(person);
+            }
+
+            return persons;
+        }
 
         private static IEnumerable<MamutOrder> GetJobsFromMamut()
         {
@@ -64,7 +94,43 @@ namespace ProfIT
             try
             {
                 list.AddRange(from DataRowView record in iteratorObject
-                              select new MamutOrder(Convert.ToInt32(record.Row.ItemArray[0]), Convert.ToInt32(record.Row.ItemArray[1]), record.Row.ItemArray[2].ToString(), record.Row.ItemArray[3].ToString(), record.Row.ItemArray[4].ToString(), record.Row.ItemArray[5].ToString(), record.Row.ItemArray[6].ToString(), Convert.ToBoolean(record.Row.ItemArray[7]), record.Row.ItemArray[8].ToString()));
+                              select new MamutOrder(Convert.ToInt32(record.Row.ItemArray[0]), Convert.ToInt32(record.Row.ItemArray[1]), record.Row.ItemArray[2].ToString(), record.Row.ItemArray[3].ToString(), record.Row.ItemArray[4].ToString(), record.Row.ItemArray[5].ToString(), record.Row.ItemArray[6].ToString(), Convert.ToBoolean(record.Row.ItemArray[7]), record.Row.ItemArray[9].ToString()));
+
+                //list.AddRange(from DataRowView record in iteratorObject
+                //              select new MamutOrder(Convert.ToInt32(record.Row.ItemArray["G_ORDER.STATUSID"].ToString()), Convert.ToInt32(record["G_ORDER.ORDERID"].ToString()), record["G_ORDER.CONTNAME"].ToString(), record["G_ORDER.ADRDELIV"].ToString(), record["G_ORDER.DATEDELIV"].ToString(), record["G_ORDER.DATEPROD"].ToString(), record["G_ORDER.REFYOUR"].ToString(), Convert.ToBoolean(record["G_ORDER.LORDERPICKED"].ToString()), (record["G_CONTAC.PHONE1"].ToString())));
+            }
+            catch
+            {
+                return null;
+            }
+
+
+            return list;
+        }
+
+        private static IEnumerable<MamutEmployee> GetEmployeesFromMamut()
+        {
+            List<MamutEmployee> list = new List<MamutEmployee>();
+
+            SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionStringMamut"].ConnectionString);
+            SqlDataSource sqlDataSource = new SqlDataSource();
+            sqlDataSource.ConnectionString = sqlConnection.ConnectionString;
+
+            sqlDataSource.SelectCommand = "SELECT EMPID, FIRSTNAME, LASTNAME, PHONE_WORK, DATA15 FROM G_EMP WHERE (DATA15 = '3')";
+            sqlDataSource.DataBind();
+
+            IEnumerable iteratorObject = sqlDataSource.Select
+                (DataSourceSelectArguments.Empty);
+
+            try
+            {
+                list.AddRange(from DataRowView record in iteratorObject
+                              select
+                                  new MamutEmployee(record.Row.ItemArray[1].ToString(),
+                                                    record.Row.ItemArray[2].ToString(),
+                                                    Convert.ToInt32(record.Row.ItemArray[0].ToString()),
+                                                    record.Row.ItemArray[3].ToString(),
+                                                    Convert.ToInt32(record.Row.ItemArray[4].ToString())));
 
                 //list.AddRange(from DataRowView record in iteratorObject
                 //              select new MamutOrder(Convert.ToInt32(record.Row.ItemArray["G_ORDER.STATUSID"].ToString()), Convert.ToInt32(record["G_ORDER.ORDERID"].ToString()), record["G_ORDER.CONTNAME"].ToString(), record["G_ORDER.ADRDELIV"].ToString(), record["G_ORDER.DATEDELIV"].ToString(), record["G_ORDER.DATEPROD"].ToString(), record["G_ORDER.REFYOUR"].ToString(), Convert.ToBoolean(record["G_ORDER.LORDERPICKED"].ToString()), (record["G_CONTAC.PHONE1"].ToString())));
@@ -117,6 +183,29 @@ namespace ProfIT
                 YourRef = yourref;
                 OrderReady = orderready;
                 Phone = phone;
+            }
+
+            public IEnumerator GetEnumerator()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class MamutEmployee : IEnumerable
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public int EMPID { get; set; }
+            public string Phone { get; set; }
+            public int DATA15 { get; set; }
+
+            public MamutEmployee(string firstname, string lastname, int empid, string phone, int data15)
+            {
+                FirstName = firstname;
+                LastName = lastname;
+                EMPID = empid;
+                Phone = phone;
+                DATA15 = data15;
             }
 
             public IEnumerator GetEnumerator()

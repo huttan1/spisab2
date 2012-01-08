@@ -408,10 +408,15 @@ namespace ProfIT
 
                 while (rdr.Read())
                 {
+
                     Job job = BindJob(rdr);
-                    
+
+
                     // Add To list
-                    list.Add(job);   
+                    if (job.Type == SiteUtilities.IMPORT || job.Type == SiteUtilities.CONSTRUCTION || job.Type == SiteUtilities.DESTRUCTION)
+                    {
+                        list.Add(job);
+                    }
                 }
 
             }
@@ -625,7 +630,10 @@ namespace ProfIT
                     Job job = BindJob(rdr);
 
                     // Add To list
-                    list.Add(job);
+                    if (job.Type == SiteUtilities.IMPORT || job.Type == SiteUtilities.CONSTRUCTION || job.Type == SiteUtilities.DESTRUCTION)
+                    {
+                        list.Add(job);
+                    }
                 }
 
             }

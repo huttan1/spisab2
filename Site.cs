@@ -240,6 +240,29 @@ namespace ProfIT
 
         }
 
+        public static Person AddPerson(MamutV2.MamutEmployee personMamut)
+        {
+
+            var person = GetPersonByName(personMamut.FirstName.Trim(), personMamut.LastName.Trim());
+
+            if (person != null)
+            {
+                Person newperson = new Person(person.PersonId, personMamut.FirstName.Trim(), personMamut.LastName.Trim(), personMamut.Phone.Trim(), string.Empty, true, person.Active);
+
+                DataLayer.UpdatePerson(newperson, sqlConnection);
+
+                return newperson;
+            }
+            else
+            {
+                Person newperson = new Person(Guid.NewGuid(), personMamut.FirstName.Trim(), personMamut.LastName.Trim(), personMamut.Phone.Trim(), string.Empty, true, true);
+                DataLayer.CreatePerson(newperson, sqlConnection);
+
+                return newperson;
+            }
+
+        }
+
         public static void DeleteOldSession(List<Job> job, HttpSessionState session)
         {
             if (job[0] != null)
@@ -255,6 +278,10 @@ namespace ProfIT
             Job job = joblist[0];
 
             job.JobEndDate = dateTime;
+            if (job.Type == CONSTRUCTION)
+            {
+                job.Type = CONSTRUCTIONFINNISHED;
+            }
             DataLayer.UpdateJob(job, sqlConnection);
 
             var cloneIDs = DataLayer.GetJobClonesByJobId(guid, sqlConnection);
@@ -280,7 +307,7 @@ namespace ProfIT
                     
                 }
             }
-            if (job.Type == CONSTRUCTION)
+            if (job.Type == CONSTRUCTIONFINNISHED)
             {
                 job.Type = DESTRUCTION;
                 job.JobId = Guid.NewGuid();
@@ -295,20 +322,20 @@ namespace ProfIT
             }
             if (job.Type == DESTRUCTION)
             {
-                //job.Type = DESTRUCTIONFINNISHED;
-                //DataLayer.UpdateJob(job, sqlConnection);
+                job.Type = DESTRUCTIONFINNISHED;
+                DataLayer.UpdateJob(job, sqlConnection);
 
-                DataLayer.DeleteJob(job.JobId, sqlConnection);
+                //DataLayer.DeleteJob(job.JobId, sqlConnection);
 
-                var oldjoblist = DataLayer.GetJobsByJobOrderId(job.OrderID, sqlConnection);
-                foreach (var oldjob in oldjoblist)
-                {
-                    if (job.JobId == oldjob.JobId)
-                        continue;
+                //var oldjoblist = DataLayer.GetJobsByJobOrderId(job.OrderID, sqlConnection);
+                //foreach (var oldjob in oldjoblist)
+                //{
+                //    if (job.JobId == oldjob.JobId)
+                //        continue;
 
-                    oldjob.Type = CONSTRUCTIONFINNISHED;
-                    DataLayer.UpdateJob(oldjob, sqlConnection);
-                }
+                //    //oldjob.Type = CONSTRUCTIONFINNISHED;
+                //    DataLayer.UpdateJob(oldjob, sqlConnection);
+                //}
 
                 return;
             }
