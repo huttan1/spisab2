@@ -153,7 +153,7 @@ namespace ASP.App_Code
                                 Job job = new Job(Guid.NewGuid(), companyname, true, id.ToString(), jobstartdate, jobenddate,
                                                   orderref, address, string.Empty, DateTime.MaxValue,
                                                   DateTime.MaxValue, DateTime.MaxValue, DateTime.MaxValue, string.Empty,
-                                                  false, false, Guid.Empty, string.Empty, phone, 10, string.Empty);
+                                                  false, false, Guid.Empty, string.Empty, phone, 5, string.Empty);
 
                                 Job j = AddOrderToList(job);
 

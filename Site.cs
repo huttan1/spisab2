@@ -12,6 +12,11 @@ namespace ProfIT
     {
         
          public static SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+         public const int IMPORT = 5;
+         public const int CONSTRUCTION = 10;
+         public const int CONSTRUCTIONFINNISHED = 15;
+         public const int DESTRUCTION = 20;
+         public const int DESTRUCTIONFINNISHED = 25;
 
         /// <summary>
         /// Gets the current week start date.
@@ -275,19 +280,45 @@ namespace ProfIT
                     
                 }
             }
+            if (job.Type == CONSTRUCTION)
+            {
+                job.Type = DESTRUCTION;
+                job.JobId = Guid.NewGuid();
+                job.JobStartDate = dateTime;
+                job.JobEndDate = dateTime;
+                job.RentEndDate = DateTime.MaxValue;
+                job.RentStartDate = DateTime.MaxValue;
+                job.PersonsInThisJob = string.Empty;
+                job.Cars = string.Empty;
+                DataLayer.CreateJob(job, sqlConnection);
+                return;
+            }
+            if (job.Type == DESTRUCTION)
+            {
+                job.Type = DESTRUCTIONFINNISHED;
+                DataLayer.UpdateJob(job, sqlConnection);
+                var oldjoblist = DataLayer.GetJobsByJobOrderId(job.OrderID, sqlConnection);
 
-            job.Type = 20;
-            job.JobId = Guid.NewGuid();
-            job.JobStartDate = dateTime;
-            job.JobEndDate = dateTime;
-            job.RentEndDate = DateTime.MaxValue;
-            job.RentStartDate = DateTime.MaxValue;
-            job.PersonsInThisJob = string.Empty;
-            job.Cars = string.Empty;
+                foreach (var oldjob in oldjoblist)
+                {
+                    if (job.JobId == oldjob.JobId)
+                        continue;
+
+                    oldjob.Type = CONSTRUCTIONFINNISHED;
+                    DataLayer.UpdateJob(oldjob, sqlConnection);
+                }
+
+                return;
+            }
 
 
-            DataLayer.CreateJob(job, sqlConnection);
+            
 
+        }
+
+        public static List<Guid> GetCloneJobsByJobId(Guid jobId)
+        {
+           return DataLayer.GetJobClonesByJobId(jobId, sqlConnection);
         }
     }
 
