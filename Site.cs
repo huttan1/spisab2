@@ -295,10 +295,12 @@ namespace ProfIT
             }
             if (job.Type == DESTRUCTION)
             {
-                job.Type = DESTRUCTIONFINNISHED;
-                DataLayer.UpdateJob(job, sqlConnection);
-                var oldjoblist = DataLayer.GetJobsByJobOrderId(job.OrderID, sqlConnection);
+                //job.Type = DESTRUCTIONFINNISHED;
+                //DataLayer.UpdateJob(job, sqlConnection);
 
+                DataLayer.DeleteJob(job.JobId, sqlConnection);
+
+                var oldjoblist = DataLayer.GetJobsByJobOrderId(job.OrderID, sqlConnection);
                 foreach (var oldjob in oldjoblist)
                 {
                     if (job.JobId == oldjob.JobId)

@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\wwwroot\Bin\</OutputPath>
+    <OutputPath>..\spisab\Bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -39,7 +39,7 @@
     <Reference Include="Interop.gbaapi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>D:\Websites\JobbPlaneraren\wwwroot\Bin\Interop.gbaapi.dll</HintPath>
+      <HintPath>..\spisab\Bin\Interop.gbaapi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="DataLayer.cs" />
     <Compile Include="Mamut.cs" />
+    <Compile Include="MamutV2.cs" />
     <Compile Include="Site.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

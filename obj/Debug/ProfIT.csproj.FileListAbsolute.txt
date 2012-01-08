@@ -8,3 +8,8 @@ C:\inetpub\wwwroot\Jobbplaneraren\wwwroot\Bin\ProfIT.pdb
 C:\inetpub\wwwroot\Jobbplaneraren\ProfIT\obj\Debug\ResolveAssemblyReference.cache
 C:\inetpub\wwwroot\Jobbplaneraren\ProfIT\obj\Debug\ProfIT.dll
 C:\inetpub\wwwroot\Jobbplaneraren\ProfIT\obj\Debug\ProfIT.pdb
+D:\Websites\ProfIT\wwwroot\spisab\Bin\ProfIT.dll
+D:\Websites\ProfIT\wwwroot\spisab\Bin\ProfIT.pdb
+D:\Websites\ProfIT\wwwroot\spisab2\obj\Debug\ResolveAssemblyReference.cache
+D:\Websites\ProfIT\wwwroot\spisab2\obj\Debug\ProfIT.dll
+D:\Websites\ProfIT\wwwroot\spisab2\obj\Debug\ProfIT.pdb
